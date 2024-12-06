@@ -1,13 +1,14 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
-import promotions from './promotions'
+import promotions from "./promotions";
+import promotion from "./promotion";
 
 const modules = {
-    promotions,
-    // kolejne moduły
-
-}
+  promotions,
+  promotion,
+  // kolejne moduły
+};
 
 export default createStore({
-    modules,
-})
+  modules,
+});
