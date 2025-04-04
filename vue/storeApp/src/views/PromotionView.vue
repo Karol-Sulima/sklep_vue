@@ -13,15 +13,16 @@
                 <h3>Duration: {{ formattedFinishCondition }}</h3>
             </div>
             <div class="items">
-                <div v-for="item in promotionObject.items" :key="item.id" class="item">
-                    {{ item.id }}
-                </div>
+                <!-- Use ProductTile for each product in the promotion -->
+                <ProductTile v-for="product in promotionObject.items" :key="product.id" :product="product" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import ProductTile from "@/components/ProductTile.vue";
+
 export default {
     created() {
         this.$store.dispatch("FETCH_PROMOTION", this.$route.params.id);
@@ -58,7 +59,9 @@ export default {
             }
             return "No finish condition available";
         }
-    }
+    }, components: {
+        ProductTile,
+    },
 }
 </script>
 
@@ -71,10 +74,22 @@ export default {
 }
 
 .content {
-    margin-left: 50px;
-    margin-right: 50px;
+    margin: 50px 20px;
 }
 
+.content>p {
+    margin: 20px 0;
+}
+
+.durationBox {
+    background-color: rgba(0, 0, 0, 0.133);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: right;
+    width: 100%;
+    color: black;
+    margin-bottom: 30px;
+}
 
 .shadowBox {
     background-color: rgba(0, 0, 0, 0.5);
@@ -83,5 +98,15 @@ export default {
     text-align: center;
     width: fit-content;
     color: white;
+}
+
+.items {
+    display: grid;
+    grid-template-columns: repeat(3, 300px);
+    justify-content: space-evenly;
+    align-items: start;
+    gap: 20px;
+    width: 100%;
+    margin: 0 auto;
 }
 </style>

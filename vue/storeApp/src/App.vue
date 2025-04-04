@@ -23,5 +23,7 @@ import "@/styles/style.css"
 .view-container {
   flex: 1;
   overflow: auto;
+  justify-content: center;
+  align-items: center;
 }
 </style>
