@@ -27,6 +27,9 @@ const products = {
     GET_PRODUCTS_LIST(state) {
       return state.productsList;
     },
+    GET_PRODUCT_BY_ID: (state) => (id) => {
+      return state.productsList.find((product) => product.id === id);
+    },
   },
   actions: {
     async FETCH_PRODUCTS({ commit }) {

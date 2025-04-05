@@ -41,5 +41,6 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 50px;
+    padding-bottom: 75px;
 }
 </style>

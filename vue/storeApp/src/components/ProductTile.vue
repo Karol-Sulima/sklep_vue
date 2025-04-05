@@ -1,5 +1,5 @@
 <template>
-    <div :style="contStyle" class="productTile">
+    <router-link :to="`/product/${product.id}`" class="productTile">
         <img :src="imageUrl" alt="Product Image" />
         <h3>{{ product?.name || "No Name" }}</h3>
         <span>
@@ -12,7 +12,7 @@
         </span>
         <!-- Add the Rating component here -->
         <Rating :rate="product.rate" :ratesNumber="product.ratesNumber" />
-    </div>
+    </router-link>
 </template>
 
 <script>
@@ -35,15 +35,6 @@ export default {
             // Dynamically compute the image URL
             return this.product?.image ? `/src/assets/${this.product.image}` : "/src/assets/default.jpg";
         },
-        contStyle() {
-            // Optional: Add dynamic styles if needed
-            return {
-                backgroundColor: "#f9f9f9",
-            };
-        },
-    },
-    mounted() {
-        console.log("Product in ProductTile:", this.product); // Debugging log
     },
 };
 </script>
@@ -57,8 +48,14 @@ export default {
     align-items: center;
     text-decoration: none !important;
     flex-direction: column;
-    width: 100%;
     border: 2px solid #dfd9d9;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.productTile:hover {
+    transform: scale(1.05);
+    /* Add a hover effect */
 }
 
 .category {

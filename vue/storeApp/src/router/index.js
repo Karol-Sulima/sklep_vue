@@ -8,6 +8,8 @@ import AboutView from "@/views/AboutView.vue";
 import PromotionView from "@/views/PromotionView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import SearchView from "@/views/SearchView.vue";
+import ProductView from "@/views/ProductView.vue";
+
 //lazy load - renderuje się tylko gdy jest potrzebny a nie z gory
 
 const NotFoundView = () => import("@/views/NotFoundView.vue");
@@ -40,6 +42,11 @@ const router = createRouter({
       path: "/search",
       name: "SearchView",
       component: SearchView,
+    },
+    {
+      path: "/product/:id",
+      name: "ProductView",
+      component: ProductView,
     },
   ],
 });
