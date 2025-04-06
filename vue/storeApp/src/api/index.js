@@ -18,4 +18,5 @@ const getPromotion = (id) => get(`http://localhost:3000/promotion/${id}`);
 const getPromotions = () => get("http://localhost:3000/promotions");
 const getProduct = (id) => get(`http://localhost:3000/product/${id}`);
 const getProducts = () => get(`http://localhost:3000/products`);
-export { getPromotions, getPromotion, getProduct, getProducts };
+const getCategories = () => get(`http://localhost:3000/categories`);
+export { getPromotions, getPromotion, getProduct, getProducts, getCategories };
