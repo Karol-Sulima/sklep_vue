@@ -5,6 +5,8 @@ const data = require("./static/data.json");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 // MongoDB connection
 mongoose.connect("mongodb://127.0.0.1:27017/sklep_vue", {
@@ -121,7 +123,57 @@ app.post("/createUser", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+app.post("/loginUser", async (req, res) => {
+  const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  try {
+    // Find the user in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the password matches
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Set a cookie with the user's email
+    res.cookie("email", email, { httpOnly: true, secure: false }); // Use `secure: true` in production with HTTPS
+    res.status(200).json({ status: "loggedin", email });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+app.post("/logoutUser", (req, res) => {
+  res.clearCookie("email");
+  res.status(200).json({ status: "logout" });
+});
+app.get("/getCurrentUser", async (req, res) => {
+  const email = req.cookies.email;
+
+  if (!email) {
+    return res.status(401).json({ status: "unauthorized" });
+  }
+
+  try {
+    // Check if the user exists in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ status: "unauthorized" });
+    }
+
+    res.status(200).json({ status: "authorized", email });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 app.listen(PORT, function () {
   console.log(`Server started at http://localhost:${PORT}`);
 });
