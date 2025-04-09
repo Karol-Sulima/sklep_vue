@@ -42,7 +42,10 @@ const getProducts = () => get(`http://localhost:3000/products`);
 const getCategories = () => get(`http://localhost:3000/categories`);
 const registerUser = (userObject) =>
   post(`http://localhost:3000/createUser`, userObject);
-
+const loginUser = (userObject) =>
+  post(`http://localhost:3000/loginUser`, userObject);
+const logoutUser = () => post(`http://localhost:3000/logoutUser`);
+const getCurrentUser = () => get(`http://localhost:3000/getCurrentUser`);
 export {
   getPromotions,
   getPromotion,
@@ -50,4 +53,7 @@ export {
   getProducts,
   getCategories,
   registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
 };

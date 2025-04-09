@@ -1,9 +1,19 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import Header from "@/components/Header.vue"
-import Footer from "@/components/Footer.vue"
-import "@/styles/style.css"
+import { RouterView } from 'vue-router';
+import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
+import "@/styles/style.css";
+import { useStore } from "vuex";
+import { onBeforeMount } from "vue";
+
+const store = useStore();
+
+// Fetch the current user before the app is mounted
+onBeforeMount(() => {
+  store.dispatch("fetchCurrentUser");
+});
 </script>
+
 <template>
   <div class="app-container">
     <Header />
@@ -13,6 +23,7 @@ import "@/styles/style.css"
     <Footer />
   </div>
 </template>
+
 <style scoped>
 .app-container {
   display: flex;

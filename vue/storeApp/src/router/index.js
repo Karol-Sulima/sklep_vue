@@ -9,6 +9,7 @@ import PromotionView from "@/views/PromotionView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import SearchView from "@/views/SearchView.vue";
 import ProductView from "@/views/ProductView.vue";
+import LoginView from "@/views/LoginView.vue";
 
 //lazy load - renderuje się tylko gdy jest potrzebny a nie z gory
 
@@ -47,6 +48,11 @@ const router = createRouter({
       path: "/product/:id",
       name: "ProductView",
       component: ProductView,
+    },
+    {
+      path: "/login",
+      name: "LoginView",
+      component: LoginView,
     },
   ],
 });
