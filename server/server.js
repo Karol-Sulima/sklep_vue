@@ -3,6 +3,31 @@ const app = express();
 const PORT = 3000;
 const data = require("./static/data.json");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+// MongoDB connection
+mongoose.connect("mongodb://127.0.0.1:27017/sklep_vue", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.once("open", () => {
+  console.log("Connected to MongoDB");
+});
+
+// Middleware to parse JSON
+app.use(bodyParser.json());
+
+// Define the User schema
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+// Create the User model
+const User = mongoose.model("User", userSchema);
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -72,10 +97,29 @@ app.get("/product/:id", function (req, res) {
   }
 });
 
-app.post("/createUser", (req, res) => {
-  // dodanie obiektu usera do bazy MongoDB jeśli go nie ma
-  // ustandaryzowane odpowiedzi do klienta, jak poniżej:
-  res.json({ status: "registered" });
+app.post("/createUser", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  try {
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    // Create a new user
+    const newUser = new User({ email, password });
+    await newUser.save();
+
+    res.status(201).json({ status: "registered", user: { email } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.listen(PORT, function () {
