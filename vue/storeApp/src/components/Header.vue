@@ -10,7 +10,7 @@
         <span>Welcome, {{ user }}</span>
         <button @click="logout">Logout</button>
       </div>
-      <div v-else>
+      <div class="buttonbox" v-else>
         <RouterLink to="/login">
           <button>Login</button>
         </RouterLink>
@@ -28,7 +28,7 @@ export default {
   computed: {
     // Get the current user from Vuex store
     user() {
-      return this.$store.getters.getUserEmail; 
+      return this.$store.getters.getUserEmail;
     },
   },
   methods: {
@@ -56,15 +56,25 @@ export default {
   border-bottom: 1px solid #ddd;
 }
 
+span {
+  color: white;
+}
+
 nav {
   display: flex;
   gap: 15px;
 }
 
+.buttonbox {
+  display: flex;
+  gap: 20px;
+}
+
 .auth-nav {
   display: flex;
   align-items: center;
-  gap: 10px;
+
+  gap: 30px !important;
 }
 
 .auth-nav button {
@@ -73,6 +83,7 @@ nav {
   padding: 10px;
   border: none;
   border-radius: 5px;
+  width: 100px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
