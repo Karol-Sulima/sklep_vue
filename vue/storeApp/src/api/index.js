@@ -25,19 +25,24 @@ const post = (url, userObject) =>
           resolve(response.data);
         })
         .catch((error) => {
-          reject(error);
+          if (error.response && error.response.status === 409) {
+            // Obsługa błędu 409 (użytkownik już istnieje)
+            reject({ status: 409, message: "User already exists" });
+          } else {
+            reject(error);
+          }
         });
     }, 1000);
   });
+
 const getPromotion = (id) => get(`http://localhost:3000/promotion/${id}`);
 const getPromotions = () => get("http://localhost:3000/promotions");
 const getProduct = (id) => get(`http://localhost:3000/product/${id}`);
 const getProducts = () => get(`http://localhost:3000/products`);
 const getCategories = () => get(`http://localhost:3000/categories`);
-const registerUser = (userObject = post(
-  `http://localhost:3000/createUser`,
-  userObject
-));
+const registerUser = (userObject) =>
+  post(`http://localhost:3000/createUser`, userObject);
+
 export {
   getPromotions,
   getPromotion,
