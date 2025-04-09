@@ -4,7 +4,13 @@ const PORT = 3000;
 const data = require("./static/data.json");
 const cors = require("cors");
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true, //ustawia header access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.get("/promotions", function (req, res) {
   res.json(data.promotions);
@@ -65,6 +71,13 @@ app.get("/product/:id", function (req, res) {
     res.status(404).json({ message: "Product not found" });
   }
 });
+
+app.post("/createUser", (req, res) => {
+  // dodanie obiektu usera do bazy MongoDB jeśli go nie ma
+  // ustandaryzowane odpowiedzi do klienta, jak poniżej:
+  res.json({ status: "registered" });
+});
+
 app.listen(PORT, function () {
   console.log(`Server started at http://localhost:${PORT}`);
 });
