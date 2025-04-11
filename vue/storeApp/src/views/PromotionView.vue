@@ -1,20 +1,25 @@
 <template>
     <div>
-        <div :style="contStyle" class="banner">
-            <div class="shadowBox">
-                <h1>{{ this.promotionObject.header }}</h1>
-                <h2>{{ this.promotionObject.description }}</h2>
-            </div>
-        </div>
-        <div class="content">
-            <p>{{ this.promotionObject.longDescription }}</p>
+        <!-- Loader -->
+        <Apploader :visible="promotionLoading" />
 
-            <div class="durationBox">
-                <h3>Duration: {{ formattedFinishCondition }}</h3>
+        <div v-if="!promotionLoading">
+            <div :style="contStyle" class="banner">
+                <div class="shadowBox">
+                    <h1>{{ promotionObject.header }}</h1>
+                    <h2>{{ promotionObject.description }}</h2>
+                </div>
             </div>
-            <div class="items">
-                <!-- Use ProductTile for each product in the promotion -->
-                <ProductTile v-for="product in promotionObject.items" :key="product.id" :product="product" />
+            <div class="content">
+                <p>{{ promotionObject.longDescription }}</p>
+
+                <div class="durationBox">
+                    <h3>Duration: {{ formattedFinishCondition }}</h3>
+                </div>
+                <div class="items">
+                    <!-- Use ProductTile for each product in the promotion -->
+                    <ProductTile v-for="product in promotionObject.items" :key="product.id" :product="product" />
+                </div>
             </div>
         </div>
     </div>
@@ -22,14 +27,23 @@
 
 <script>
 import ProductTile from "@/components/ProductTile.vue";
+import Apploader from "@/components/Apploader.vue";
 
 export default {
+    name: "PromotionView",
+    components: {
+        ProductTile,
+        Apploader,
+    },
     created() {
-        this.$store.dispatch("FETCH_PROMOTION", this.$route.params.id);
+        this.$store.dispatch("FETCH_PROMOTION", this.$route.params.id); // Wywołanie akcji ładowania promocji
     },
     computed: {
         promotionObject() {
-            return this.$store.getters.GET_PROMOTION_OBJECT;
+            return this.$store.getters.GET_PROMOTION_OBJECT; // Pobiera obiekt promocji z Vuex
+        },
+        promotionLoading() {
+            return this.$store.state.promotion.promotionLoading; // Pobiera stan ładowania z Vuex
         },
         contStyle() {
             const { image } = this.promotionObject;
@@ -42,11 +56,11 @@ export default {
             }
 
             return {
-                margintop: '50px',
-                width: '100%',
-                height: '300px',
+                margintop: "50px",
+                width: "100%",
+                height: "300px",
                 background: `url(${imageUrl}) no-repeat center center`,
-                backgroundSize: 'cover',
+                backgroundSize: "cover",
             };
         },
         formattedFinishCondition() {
@@ -58,11 +72,9 @@ export default {
                 return date.toLocaleDateString();
             }
             return "No finish condition available";
-        }
-    }, components: {
-        ProductTile,
+        },
     },
-}
+};
 </script>
 
 <style lang="css" scoped>

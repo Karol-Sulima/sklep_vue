@@ -1,7 +1,6 @@
 import { getPromotions } from "@/api";
 
 const promotions = {
-  //state
   state() {
     return {
       promotionsList: [],
@@ -10,42 +9,40 @@ const promotions = {
     };
   },
 
-  //mutations czyli setters
   mutations: {
     SET_PROMOTIONS_LIST(state, newPromotions) {
       state.promotionsList = newPromotions;
     },
-    SET_PROMOTIONS_LOADING(sate) {},
+    SET_PROMOTIONS_LOADING(state, loading) {
+      state.promotionsLoading = loading; // Ustawia stan ładowania
+    },
+    SET_PROMOTIONS_ERROR(state, error) {
+      state.promotionsError = error; // Ustawia błąd
+    },
   },
 
-  //getters
   getters: {
     GET_PROMOTIONS_LIST(state) {
       return state.promotionsList;
     },
+    GET_PROMOTIONS_LOADING(state) {
+      return state.promotionsLoading; // Zwraca stan ładowania
+    },
   },
 
-  // tu zapytania do serwera z pomocą naszego api
   actions: {
-    FETCH_PROMOTIONS({ state, commit }) {
-      // najpierw ustawiamy stan ładowania na true (czyli dane się ładują, teraz mógłby się pokazywać loader)
-
-      commit("SET_PROMOTIONS_LOADING", true);
-
-      // potem wywołujemy funkcję z api, która
-      // odbiera dane z serwera (poprzez axios) i ustawia listę promocji w store
-      // w razie błędu ustawia error w store (catch)
-      // niezależnie od błędu lub jego braku (finally), kończy loading
+    FETCH_PROMOTIONS({ commit }) {
+      commit("SET_PROMOTIONS_LOADING", true); // Ustawia ładowanie na true
 
       getPromotions()
         .then((data) => {
-          commit("SET_PROMOTIONS_LIST", data);
+          commit("SET_PROMOTIONS_LIST", data); // Ustawia listę promocji
         })
         .catch((error) => {
-          commit("SET_PROMOTIONS_ERROR", "server error!!!");
+          commit("SET_PROMOTIONS_ERROR", "server error!!!"); // Ustawia błąd
         })
         .finally(() => {
-          commit("SET_PROMOTIONS_LOADING", false);
+          commit("SET_PROMOTIONS_LOADING", false); // Ustawia ładowanie na false
         });
     },
   },

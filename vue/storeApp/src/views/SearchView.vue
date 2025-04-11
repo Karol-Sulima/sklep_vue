@@ -1,5 +1,8 @@
 <template>
     <div class="search">
+        <!-- Loader -->
+        <Apploader :visible="loading || productsLoading" />
+
         <form @submit.prevent="onSubmit" class="searchForm">
             <input v-model="name" placeholder="Search by name" class="searchInput" />
             <select v-model="category" class="searchSelect">
@@ -15,25 +18,28 @@
             </select>
             <button type="submit" class="searchButton">Search</button>
         </form>
-        <div>
+        <div class="products">
             <ProductTile v-for="(product, index) in productsList" :key="index" :product="product" />
         </div>
     </div>
 </template>
 
 <script>
-import ProductTile from '../components/ProductTile.vue';
+import ProductTile from "../components/ProductTile.vue";
+import Apploader from "../components/Apploader.vue";
 
 export default {
     name: "SearchView",
     components: {
         ProductTile,
+        Apploader,
     },
     data() {
         return {
             name: "",
             category: "",
             sort: "name_asc", // Default sort option
+            loading: false, // Loader visibility state for search
             sortOptions: [
                 { label: "Name asc", value: "name_asc" },
                 { label: "Name desc", value: "name_desc" },
@@ -54,6 +60,9 @@ export default {
         categoriesList() {
             return this.$store.getters.GET_CATEGORIES_LIST;
         },
+        productsLoading() {
+            return this.$store.state.products.productsLoading; // Get loading state from Vuex
+        },
     },
     methods: {
         async onSubmit() {
@@ -70,6 +79,7 @@ export default {
                 params.append("_order", sortOrder);
             }
 
+            this.loading = true; // Show loader
             try {
                 // Make the API request to the server
                 const response = await fetch(`http://localhost:3000/products?${params.toString()}`);
@@ -79,17 +89,17 @@ export default {
                 this.$store.commit("SET_PRODUCTS_LIST", products);
             } catch (error) {
                 console.error("Error fetching products:", error);
+            } finally {
+                this.loading = false; // Hide loader
             }
         },
     },
 };
 </script>
-
 <style lang="css" scoped>
 .search {
     margin-top: 50px;
-    width: 80%;
-    margin-left: 10%;
+    width: 100%;
 }
 
 .searchForm {
@@ -99,12 +109,14 @@ export default {
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
+    width: 60%;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 100px;
+    margin: auto;
     margin-top: 75px;
+    margin-bottom: 100px;
 }
 
 .searchInput {
@@ -139,20 +151,14 @@ export default {
     background-color: #0056b3;
 }
 
-.search>div {
+.products {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    /* Adjust to fit items */
     justify-content: center;
-    /* Center the items horizontally */
     align-items: start;
-    /* Align items to the top */
     gap: 20px;
-    /* Add spacing between items */
     max-width: 1200px;
-    /* Prevent the grid from stretching too wide */
     margin: 0 auto;
-    /* Center the grid container itself */
     padding-bottom: 75px;
 }
 </style>

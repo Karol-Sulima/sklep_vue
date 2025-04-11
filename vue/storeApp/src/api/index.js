@@ -4,7 +4,7 @@ const get = (url) =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       axios
-        .get(url)
+        .get(url, { withCredentials: true })
         .then((response) => {
           console.log("data", response.data);
           resolve(response.data);

@@ -1,5 +1,8 @@
 <template>
     <div class="registerView">
+        <!-- Loader -->
+        <Apploader :visible="loading" />
+
         <div v-show="exists" class="info">
             <h1>Info</h1>
             <p>User już istnieje</p>
@@ -16,16 +19,20 @@
 
 <script>
 import { registerUser } from "@/api/index.js";
+import Apploader from "@/components/Apploader.vue";
 
 export default {
     name: "RegisterView",
+    components: {
+        Apploader,
+    },
     data() {
         return {
             error: "",
             email: "",
             password: "",
             exists: false,
-            loading: false,
+            loading: false, // Loader visibility state
         };
     },
     computed: {
@@ -35,7 +42,7 @@ export default {
     },
     methods: {
         async onSubmit() {
-            this.loading = true;
+            this.loading = true; // Show loader
             this.error = "";
             this.exists = false; // Resetuje flagę przed próbą rejestracji
 
@@ -61,7 +68,7 @@ export default {
                     this.error = "Failed to register user. Please try again.";
                 }
             } finally {
-                this.loading = false;
+                this.loading = false; // Hide loader
             }
         },
     },

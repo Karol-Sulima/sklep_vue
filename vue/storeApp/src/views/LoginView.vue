@@ -1,5 +1,8 @@
 <template>
     <div class="loginView">
+        <!-- Loader -->
+        <Apploader :visible="loading" />
+
         <form @submit.prevent="onSubmit">
             <h3>Login Form</h3>
             <div v-if="error" class="error">{{ error }}</div>
@@ -11,14 +14,20 @@
 </template>
 
 <script>
+import Apploader from "@/components/Apploader.vue";
+
 export default {
     name: "LoginView",
+    components: {
+        Apploader,
+    },
     data() {
         return {
             email: "",
             password: "",
             error: "",
             logged: false,
+            loading: false, // Loader visibility state
         };
     },
     computed: {
@@ -29,6 +38,7 @@ export default {
     methods: {
         async onSubmit() {
             this.error = ""; // Reset error message
+            this.loading = true; // Show loader
             try {
                 // Dispatch login action to Vuex store
                 await this.$store.dispatch("loginUser", { email: this.email, password: this.password });
@@ -45,6 +55,8 @@ export default {
                 console.error("Login failed:", err);
                 this.error = "Invalid login credentials. Please try again.";
                 this.logged = false;
+            } finally {
+                this.loading = false; // Hide loader
             }
         },
     },
